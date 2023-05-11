@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -30,7 +29,6 @@ import it.polimi.tiw.dao.CategoryDAO;
  */
 @WebServlet("/SelectTree")
 public class SelectTree extends HttpServlet {
-	private static final Logger LOGGER = Logger.getLogger(CategoryDAO.class.getName()); // DEBUG only
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
@@ -70,7 +68,6 @@ public class SelectTree extends HttpServlet {
 		
 		try {
 			tree = dao.getAll(id);
-			//LOGGER.info(tree.get(0).getChildren().get(0).getChildren().get(1).getName());
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred");
 		}

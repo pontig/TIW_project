@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -32,13 +31,11 @@ import it.polimi.tiw.exceptions.BlankFieldException;
 @MultipartConfig
 public class UploadImage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = Logger.getLogger(OpenCategory.class.getName()); // DEBUG only
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
 
 	public UploadImage() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public void init() throws ServletException {
@@ -76,7 +73,7 @@ public class UploadImage extends HttpServlet {
 		}
 
 		try {
-			if (category_id == -1 || imagePart == null || imagePart.getSize()==0) {
+			if (category_id == -1 || imagePart == null || imagePart.getSize() == 0) {
 				throw new BlankFieldException("There cannot be blank fields");
 			}
 
@@ -95,7 +92,6 @@ public class UploadImage extends HttpServlet {
 		try {
 			dao.uploadImage(category_id, imageStream);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return;
 		}
@@ -105,15 +101,9 @@ public class UploadImage extends HttpServlet {
 
 	}
 
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse
-	 *      response)
-	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-//		doPost(request, response);
+		response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cannot resolve GET request on this page");
 	}
 
 }

@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -27,7 +26,6 @@ import it.polimi.tiw.beans.Category;
 
 @WebServlet("/GoToHome")
 public class GoToHome extends HttpServlet {
-	private static final Logger LOGGER = Logger.getLogger(CategoryDAO.class.getName()); // DEBUG only
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
@@ -48,7 +46,7 @@ public class GoToHome extends HttpServlet {
 
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {		// TODO Auto-generated method stub
+			throws ServletException, IOException {
 		doPost(request, response);
 	}
 
@@ -69,9 +67,7 @@ public class GoToHome extends HttpServlet {
 		
 
 		try {
-			tree = dao.getAll(null);
-			//LOGGER.info(tree.get(0).getChildren().get(0).getChildren().get(1).getName());
-		} catch (SQLException e) {
+			tree = dao.getAll(null);		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred");
 		}
 		linearize(tree, linear);
@@ -83,7 +79,6 @@ public class GoToHome extends HttpServlet {
 		ctx.setVariable("line", linear);
 		if (request.getParameter("ErrorMsgInsertion") != null ) 
 			ctx.setVariable("ErrorMsgInsertion", StringEscapeUtils.escapeJava(request.getParameter("username")));
-		//LOGGER.info(linear.get(5).getName()  linear.get(5).getId());
 		templateEngine.process(path, ctx, response.getWriter());
 		
 	}

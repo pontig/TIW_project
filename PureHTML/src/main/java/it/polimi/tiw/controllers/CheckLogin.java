@@ -5,7 +5,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -92,7 +91,6 @@ public class CheckLogin extends HttpServlet {
 				hexString.append(hex);
 			}
 			String hashedPsw = hexString.toString();
-			// LOGGER.info(hashedPsw);
 			user = dao.checkCredentials(username, hashedPsw);
 		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred");

@@ -34,7 +34,7 @@ var id_to = null
 							id_from = null
 							id_to = null
 						} else {
-							this.alert.textContent = msg
+							alert(msg)
 						}
 					}
 				})
@@ -63,7 +63,7 @@ var id_to = null
 						self.update(treeObject)
 						formContainer.update(treeObject)
 					} else {
-						self.alert.textContent = msg;
+						alert(msg);
 					}
 				}
 			})
@@ -205,7 +205,7 @@ var id_to = null
 								sp.innerHTML = newName
 								li.replaceChild(sp, input)
 							} else {
-								// TODO: gestire errore
+								alert(msg)
 							}
 						}
 					})
@@ -238,13 +238,18 @@ var id_to = null
 
 	function ImgContainer(_container) {
 		this.container = _container
+		document.querySelector("#closeImg").onclick = () => this.reset()
 
 		this.reset = () => {
+			document.location.href = "#"
 			this.container.querySelector(".imgContainer").innerHTML = ""
+			this.container.style.display = "none"
 		}
 
 		this.show = (category_id) => {
 			let self = this
+			self.container.style.display = "block"
+			window.location.href = "#images"
 			document.querySelector("input[type=hidden]").value = category_id
 			makeCall("GET", "OpenCategory?id=" + category_id, null,
 				(req) => {
@@ -254,36 +259,33 @@ var id_to = null
 							var imageList = JSON.parse(msg)
 							self.update(imageList)
 						} else {
-							// TODO: gestire caso di login non fatto
+							alert(msg)
 						}
 					}
 				})
 
-			this.container.style.visibility = "visible"
-			this.container.querySelector(".imgContainer").style.visibility = ""
 
-
-			this.container.querySelector("form").addEventListener("submit", (e) => {
-				e.preventDefault()
-				let form = e.target.closest("form")
-				if (form.checkValidity()) {
-					let formData = new FormData(form)
-					// transform the input name image into a blob
-					//let file = form.querySelector("input[type=file]").files[0]
-					//formData.append("image", file)
-					makeCall("POST", "UploadImage", formData,
-						(req) => {
-							if (req.readyState == 4) {
-								var msg = req.responseText
-								if (req.status == 200) {
-									console.log("Image uploaded")
-									self.show(category_id)
-								} else {
-								}
-							}
-						})
-				}
-			})
+			// this.container.querySelector("form").addEventListener("submit", (e) => {
+			// 	e.preventDefault()
+			// 	let form = e.target.closest("form")
+			// 	if (form.checkValidity()) {
+			// 		let formData = new FormData(form)
+			// 		// transform the input name image into a blob
+			// 		//let file = form.querySelector("input[type=file]").files[0]
+			// 		//formData.append("image", file)
+			// 		makeCall("POST", "UploadImage", formData,
+			// 			(req) => {
+			// 				if (req.readyState == 4) {
+			// 					var msg = req.responseText
+			// 					if (req.status == 200) {
+			// 						console.log("Image uploaded")
+			// 						self.show(category_id)
+			// 					} else {
+			// 					}
+			// 				}
+			// 			})
+			// 	}
+			// })
 		}
 
 		this.update = (imageList) => {
