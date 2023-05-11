@@ -30,13 +30,11 @@ h1 {
   font: 30px Helvetica, sans-serif;
 }
 
-#container {
-  display: grid;
-  justify-content: center;
-}
 
 form { 
   color: #736359; 
+  display: grid;
+  justify-content: center;
 }
 input[type = submit]{
   font: 18px Helvetica, sans-serif; 
