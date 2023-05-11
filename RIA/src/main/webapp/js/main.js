@@ -86,7 +86,7 @@ var id_to = null
 
 			let li = document.createElement("li")
 			let name = document.createTextNode(node.name)
-			let hierarchy = document.createTextNode(node.hierarchy + ", ")
+			let hierarchy = document.createTextNode(node.hierarchy + ". ")
 			let spH = document.createElement("span")
 			spH.classList.add("h")
 
