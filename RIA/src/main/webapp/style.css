@@ -36,7 +36,7 @@ form {
   display: grid;
   justify-content: center;
 }
-input[type = submit]{
+input[type = submit], #logout{
   font: 18px Helvetica, sans-serif; 
   margin: 8px;
   border: solid;

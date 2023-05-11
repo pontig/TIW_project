@@ -21,7 +21,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.google.gson.Gson;
 
-import it.polimi.tiw.Connector;
+import it.polimi.tiw.Handler;
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.CategoryDAO;
 
@@ -39,7 +39,7 @@ public class RenameCategory extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Connector.getConnection(getServletContext());
+		connection = Handler.getConnection(getServletContext());
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)

@@ -23,7 +23,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.google.gson.Gson;
 
-import it.polimi.tiw.Connector;
+import it.polimi.tiw.Handler;
 import it.polimi.tiw.dao.CategoryDAO;
 import it.polimi.tiw.exceptions.BlankFieldException;
 import it.polimi.tiw.exceptions.TooManyChildrenException;
@@ -44,7 +44,7 @@ public class AppendCategory extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Connector.getConnection(getServletContext());
+		connection = Handler.getConnection(getServletContext());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -101,7 +101,7 @@ public class AppendCategory extends HttpServlet {
 
 	public void destroy() {
 		try {
-			Connector.closeConnection(connection);
+			Handler.closeConnection(connection);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

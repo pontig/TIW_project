@@ -22,7 +22,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.google.gson.Gson;
 
-import it.polimi.tiw.Connector;
+import it.polimi.tiw.Handler;
 import it.polimi.tiw.dao.CategoryDAO;
 
 /**
@@ -40,7 +40,7 @@ public class UploadImage extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Connector.getConnection(getServletContext());
+		connection = Handler.getConnection(getServletContext());
 		ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
