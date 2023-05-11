@@ -21,7 +21,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.google.gson.Gson;
 
-import it.polimi.tiw.Connector;
+import it.polimi.tiw.Handler;
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.CategoryDAO;
 
@@ -38,7 +38,7 @@ public class OpenCategory extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Connector.getConnection(getServletContext());
+		connection = Handler.getConnection(getServletContext());
 
 	}
 
@@ -46,13 +46,12 @@ public class OpenCategory extends HttpServlet {
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
 		String outcome = "true";
-		List<Image> images;
+		List<Image> images = null;
 		if (session == null || session.getAttribute("currentUser") == null) {
 			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			outcome = "No user logged in";
 		} else {
 			int id_category = -1;
-			String name_category = null;
 			try {
 				id_category = Integer.parseInt(request.getParameter("id"));
 

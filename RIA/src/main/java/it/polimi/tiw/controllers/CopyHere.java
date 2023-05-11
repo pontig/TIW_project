@@ -22,7 +22,7 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.google.gson.Gson;
 
-import it.polimi.tiw.Connector;
+import it.polimi.tiw.Handler;
 import it.polimi.tiw.dao.CategoryDAO;
 import it.polimi.tiw.exceptions.TooManyChildrenException;
 import it.polimi.tiw.beans.Category;
@@ -40,7 +40,7 @@ public class CopyHere extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Connector.getConnection(getServletContext());
+		connection = Handler.getConnection(getServletContext());
 
 	}
 
@@ -129,7 +129,7 @@ public class CopyHere extends HttpServlet {
 
 	public void destroy() {
 		try {
-			Connector.closeConnection(connection);
+			Handler.closeConnection(connection);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -21,7 +21,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.Connector;
+import it.polimi.tiw.Handler;
 import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.exceptions.BlankFieldException;
 import it.polimi.tiw.beans.User;
@@ -41,7 +41,7 @@ public class CheckLogin extends HttpServlet {
     }
 
     public void init() throws ServletException {
-        connection = Connector.getConnection(getServletContext());
+        connection = Handler.getConnection(getServletContext());
 
     }
 
@@ -112,7 +112,7 @@ public class CheckLogin extends HttpServlet {
 
     public void destroy() {
         try {
-            Connector.closeConnection(connection);
+            Handler.closeConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }

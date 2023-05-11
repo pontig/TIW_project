@@ -4,6 +4,7 @@
 
 (function () {
 	document.getElementById("submit").onclick = (e) => {
+		e.preventDefault()
 		var form = e.target.closest("form")
 		if (form.checkValidity()) {
 			makeCall("POST", "CheckLogin", form, (x) => {
@@ -26,6 +27,9 @@
 							alert("An error occurred, try again later")
 							form.reset()
 							break
+						default:
+							console.log(msg)
+							form.reset()
 					}
 				} else form.reportValidity()
 			})
