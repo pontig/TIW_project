@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -33,13 +32,11 @@ import it.polimi.tiw.dao.CategoryDAO;
 @MultipartConfig
 public class UploadImage extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private static final Logger LOGGER = Logger.getLogger(OpenCategory.class.getName()); // DEBUG only
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
 
 	public UploadImage() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
 
 	public void init() throws ServletException {
@@ -92,7 +89,6 @@ public class UploadImage extends HttpServlet {
 		try {
 			dao.uploadImage(category_id, imageStream);
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			outcome = "false";
 			e.printStackTrace();
 			return;

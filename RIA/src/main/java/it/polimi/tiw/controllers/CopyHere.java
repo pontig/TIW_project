@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletContext;
@@ -42,45 +41,49 @@ public class CopyHere extends HttpServlet {
 
 	public void init() throws ServletException {
 		connection = Connector.getConnection(getServletContext());
-		
+
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
-		if (session == null || session.getAttribute("currentUser") == null) {
-			response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "No user logged in");
-			return;
-		}
-		int id_from = -1, id_to = -1;
-
-		try {
-			id_from = Integer.parseInt(request.getParameter("id_from"));
-			id_to = Integer.parseInt(request.getParameter("id_to"));
-		} catch (NumberFormatException e) {
-			e.printStackTrace();
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error parsing arguments");
-			return;
-		}
-
-		CategoryDAO dao = new CategoryDAO(connection);
 		String outcome = "true";
-		Category treeToCopy = dao.getByParentId(id_from); // Ho il sottoalbero da copiare
-		boolean isRecursive = searchChild(treeToCopy, id_to);
-		if (isRecursive) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Are you trying to break my tree??");
-			return;
-		}
-		try {
-			copySubTree(treeToCopy, (long) id_to);
-		} catch (TooManyChildrenException tmce) {
-			// We cannot append another child to the category
-			outcome="false";
-			response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-		} catch (SQLException e) {
-		
-			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error in MySQL occurred: " + e.getMessage());
-			return;
+		if (session == null || session.getAttribute("currentUser") == null) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			outcome = "No user logged in";
+
+		} else {
+			int id_from = -1, id_to = -1;
+
+			try {
+				id_from = Integer.parseInt(request.getParameter("id_from"));
+				id_to = Integer.parseInt(request.getParameter("id_to"));
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				outcome = "Invalid parameters";
+				break;
+			}
+
+			CategoryDAO dao = new CategoryDAO(connection);
+			Category treeToCopy = dao.getByParentId(id_from); // Ho il sottoalbero da copiare
+			boolean isRecursive = searchChild(treeToCopy, id_to);
+			if (isRecursive) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				outcome = "Cannot copy a category into itself";
+
+			} else {
+				try {
+					copySubTree(treeToCopy, (long) id_to);
+				} catch (TooManyChildrenException tmce) {
+					// We cannot append another child to the category
+					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+					outcome = "Cannot copy the category: too many children";
+				} catch (SQLException e) {
+					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+					outcome = "Cannot copy the category: database error " + e.getMessage();
+				}
+			}
 		}
 		String json = new Gson().toJson(outcome);
 		response.setContentType("application/json");
@@ -88,18 +91,22 @@ public class CopyHere extends HttpServlet {
 		response.getWriter().write(json);
 
 	}
-	
+
 	private boolean searchChild(Category p, int id) {
 		return p.getId() == id ? true : searchInChildren(p.getChildren(), id);
 	}
-	
+
 	private boolean searchInChildren(List<Category> tree, int id) {
 		boolean res = false;
-		if (tree == null) return false;
-		else for (Category c : tree) {
-			if (c.getId() == id) res = true;
-			else res = res || searchInChildren(c.getChildren(), id);
-		}
+		if (tree == null)
+			return false;
+		else
+			for (Category c : tree) {
+				if (c.getId() == id)
+					res = true;
+				else
+					res = res || searchInChildren(c.getChildren(), id);
+			}
 		return res;
 	}
 
@@ -119,7 +126,7 @@ public class CopyHere extends HttpServlet {
 			throws ServletException, IOException {
 		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "This page doesn't resolve POST requests");
 	}
-	
+
 	public void destroy() {
 		try {
 			Connector.closeConnection(connection);

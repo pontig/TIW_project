@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -31,7 +30,6 @@ import it.polimi.tiw.dao.CategoryDAO;
  */
 @WebServlet("/RenameCategory")
 public class RenameCategory extends HttpServlet {
-	private static final Logger LOGGER = Logger.getLogger(OpenCategory.class.getName()); // DEBUG only
 	private static final long serialVersionUID = 1L;
 	private Connection connection = null;
 	private TemplateEngine templateEngine;
@@ -42,41 +40,40 @@ public class RenameCategory extends HttpServlet {
 
 	public void init() throws ServletException {
 		connection = Connector.getConnection(getServletContext());
-		ServletContext servletContext = getServletContext();
-		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
-		templateResolver.setTemplateMode(TemplateMode.HTML);
-		this.templateEngine = new TemplateEngine();
-		this.templateEngine.setTemplateResolver(templateResolver);
-		templateResolver.setSuffix(".html");
 	}
 
-
-	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		HttpSession session = request.getSession(false);
+		String outcome = "true";
 		if (session == null || session.getAttribute("currentUser") == null) {
-			String path = getServletContext().getContextPath();
-			response.sendRedirect(path);
-			return;
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			outcome = "No user logged in";
+		} else {
+			int id_category = -1;
+			String newName = null;
+			try {
+				id_category = Integer.parseInt(request.getParameter("id"));
+				newName = StringEscapeUtils.escapeJava(request.getParameter("newName"));
+				
+				CategoryDAO dao = new CategoryDAO(connection);
+				try {
+					dao.rename(id_category, newName);
+				} catch (SQLException e) {
+					response.setStatus(500);
+					outcome = "Internal server error";
+				}
+			} catch (NumberFormatException e) {
+				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+				outcome = "Error in parameters";
+			}
 		}
-		int id_category = -1;
-		String newName = null;
-		try {
-			id_category = Integer.parseInt(request.getParameter("id"));
-			newName = StringEscapeUtils.escapeJava(request.getParameter("newName"));
-		} catch (NumberFormatException e) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Error parsing arguments");
-			return;
-		}
-		
-		CategoryDAO dao = new CategoryDAO(connection);
-		try {
-			dao.rename(id_category, newName);
-		}catch (SQLException e) {
-			response.sendError(500, "Database access failed");
-		}	
-		
-	}
+		String json = new Gson().toJson(outcome);
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		response.getWriter().write(json);
 
+	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {

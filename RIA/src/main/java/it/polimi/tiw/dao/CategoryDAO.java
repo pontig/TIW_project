@@ -1,6 +1,5 @@
 package it.polimi.tiw.dao;
 
-import java.util.logging.Logger;
 import java.io.InputStream;
 import java.sql.Blob;
 import java.sql.Connection;
@@ -20,7 +19,6 @@ import it.polimi.tiw.exceptions.TooManyChildrenException;
 
 public class CategoryDAO {
 	private Connection connection;
-	private static final Logger LOGGER = Logger.getLogger(CategoryDAO.class.getName()); // DEBUG only
 
 	public CategoryDAO(Connection con) {
 		this.connection = con;
@@ -31,7 +29,6 @@ public class CategoryDAO {
 		try {
 			PreparedStatement stmt = connection.prepareStatement("SELECT * FROM Category WHERE parent_ID IS NULL");
 			ResultSet rs = stmt.executeQuery();
-			// LOGGER.info(stmt.toString() + ", results: " + (rs == null ? '1' : '0'));
 			int i = 0; // The number shown on the marker in the list
 			while (rs.next()) {
 				i++;
@@ -74,8 +71,6 @@ public class CategoryDAO {
 				node.setHierarchy(newMarker);
 				if (areWeEnlighting)
 					node.enlight();
-				// LOGGER.info("Evaluating " + node.getName() + ", son of " +
-				// node.getParentId());
 				boolean isNull = subToEnlight == null;
 				if (isNull || subToEnlight != node.getId())
 					fillChildren(node, subToEnlight, areWeEnlighting, newMarker);
@@ -124,7 +119,6 @@ public class CategoryDAO {
 			pstatement = connection.prepareStatement(queryCheck);
 			if (!isRadix)
 				pstatement.setInt(1, parent);
-			// LOGGER.info(pstatement.toString());
 			res = pstatement.executeQuery();
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -132,7 +126,6 @@ public class CategoryDAO {
 		} finally {
 			if (res.next() && res.getInt("numChildren") < 9) {
 				try {
-					// LOGGER.info(res.getInt("numChildren") + "");
 					if (isRadix)
 						queryInsert = "INSERT INTO Category VALUES (NULL, ?, NULL)";
 					insertPreparedStatement = connection.prepareStatement(queryInsert, Statement.RETURN_GENERATED_KEYS);
@@ -187,7 +180,6 @@ public class CategoryDAO {
 				byte[] imgData = blob.getBytes(1, (int) blob.length());
 				String encodedImg = Base64.getEncoder().encodeToString(imgData);
 				i.setImg(encodedImg);
-				//LOGGER.info(i.getImg());
 				images.add(i);
 			}
 		} catch (SQLException e) {
@@ -253,11 +245,9 @@ public class CategoryDAO {
 		try {
 			pstatement = connection.prepareStatement(queryImg, Statement.RETURN_GENERATED_KEYS);
 			pstatement.setBlob(1, image);
-			//LOGGER.info(pstatement.toString());
 			pstatement.executeUpdate();
 			ResultSet key = pstatement.getGeneratedKeys();
 			key.next();
-			//LOGGER.info(key.getLong(1) + "");
 			p2 = connection.prepareStatement(queryBel);
 			p2.setInt(1, (int) key.getLong(1));
 			p2.setInt(2, category_id);
@@ -278,7 +268,6 @@ public class CategoryDAO {
 			pstatement = connection.prepareStatement(query);
 			pstatement.setString(1, newName);
 			pstatement.setInt(2, id);
-			LOGGER.info(pstatement.toString());
 			pstatement.executeUpdate();
 		} catch (SQLException e) {
 			throw new SQLException(e);
