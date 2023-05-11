@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>Tassonomia</title>
+<link rel="stylesheet" type="text/css" media="all"
+	href="$../helper/style.css" th:href="@{/helper/style.css}" />
+</head>
+<body>
+	<h1>Tassonomia</h1>
+	<a th:href="@{/Logout}">Logout</a>
+	<div id="content">
+		<div>
+			<p th:text="${ErrorMsgInsertion}"></p>
+			<p th:if="${ErrorMsgInsertion != null}">Messaggio di errore custom</p>
+			<a th:if="${areWeCopying}"
+				th:href="@{/GoToHome}">Annulla</a><br>
+			<a th:if="${areWeCopying && #lists.size(categories) < 9}"
+				th:href="@{/CopyHere(id_from=${from},id_to=-1)}"> Copia nella root</a>
+			<ul th:each="category : ${categories}"
+				th:insert="@{WEB-INF/category-hierarchy.html} :: list(category) ">
+			</ul>
+		</div>
+		<div th:if="${line != null}">
+			<h3>Inserisci nuova categoria</h3>
+			<form action="#" th:action="@{/AppendCategory}" method="POST">
+				<label for="name">Nome: </label><br>
+				<input type="text" name="name" required><br>
+				<label for="father">Figlio di: </label> <br>
+				<select name="father">
+					<option th:if="${#lists.size(categories) < 9}" value="-1">nessun padre</option>
+					<option th:each="category : ${line}"
+						th:if="${#lists.size(category.children) < 9}"
+						th:text="${category.hierarchy} + ', ' + ${category.name}"
+						th:value="${category.id}"></option>
+				</select><br>
+				<input type="submit" value="Create Category" name="submit">
+			</form>
+		</div>
+	</div>
+	<div id="images"></div>
+</body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <title>Tassonomia RIA</title>
+    <script src="js/util.js" defer></script>
+    <script src="js/main.js" defer></script>
+  </head>
+  <body>
+    <h1>Tassonomia</h1>
+    <button id="logout">Logout</button>
+    <div id="content">
+      <div id="left">
+        <div id="alertDiv">
+          <p>Sicuro?</p>
+          <button id="confirm">Si</button>
+          <button id="revert">Annulla</button>
+        </div>
+        <a id="copyInRoot" style="visibility: hidden">Copia nella root</a>
+        <div id="treeContainer">
+          <ul id="tree"></ul>
+        </div>
+      </div>
+      <div id="right">
+        <h3>Inserisci nuova categoria</h3>
+        <form action="#" id="newCategoryForm">
+          <label for="name">Nome: </label><br />
+          <input type="text" name="name" required /><br />
+          <label for="father">Figlio di: </label> <br />
+          <select name="father"></select>
+          <br />
+          <input type="submit" value="Create Category" name="submit" />
+        </form>
+      </div>
+    </div>
+    <div id="images">
+      <button id="closeImg">Chiudi immagini</button>
+      <!-- Non richiesto? -->
+      <h2>Carica nuova immagine per questa categoria</h2>
+      <form enctype="multipart/form-data" action="#" id="uploadNewImg">
+        <label for="image">Immagine da caricare: </label>
+        <input type="hidden" name="id" />
+        <input type="file" name="image" required /> <br />
+        <input type="submit" value="inserisci" />
+      </form>
+      <div class="imgContainer"></div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" type="text/css" media="all"
+	href="$../helper/style.css" th:href="@{/helper/style.css}" />
+<head>
+<meta charset="UTF-8">
+<title>Visualizza immagini</title>
+</head>
+<body>
+	<h2 th:text="'Immagini della categoria ' +  ${category_name}"></h2>
+	<a th:href="@{/GoToHome}">Torna a casa</a><br>
+	<span th:each="single : ${images}">
+		<img th:src="${'data:image/png;base64,' + single.img}" alt="non funziona"><br>
+	</span>
+
+	<h2>Carica nuova immagine per questa categoria</h2>
+	<form enctype="multipart/form-data" action="#"
+		th:action="@{/UploadImgs}" method="POST">
+		<input type="hidden" name="id" th:value="${category_id}">
+		<input type="hidden" name="category_name" th:value="${category_name}">
+		<label for="file">Immagine da caricare: </label>
+		<input type="file" name="image" required> <br>
+		<input type="submit" value="inserisci">
+	</form>
+</body>
+</html>

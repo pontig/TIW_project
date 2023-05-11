@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<link rel="stylesheet" type="text/css" media="all"
+	href="$../helper/style.css" th:href="@{/helper/style.css}" />
+<body>
+	<div th:fragment="list(category)"
+		th:classappend="(${category.enlighted}) ? 'enlighted'">
+		<span th:text="${category.hierarchy} + ' ~> ' + ${category.name}"></span>
+		<span th:if="${!areWeCopying}">
+		<a th:href="@{/SelectTree(radix=${category.id})}">Copia</a>
+		-
+		<a th:href="@{/OpenCategory(id=${category.id},category_name=${category.hierarchy + '. ' + category.name})}">Apri</a>
+		</span>
+		<a  th:if="${!category.enlighted && areWeCopying && #lists.size(category.children) < 9}"
+			th:href="@{/CopyHere(id_from=${from},id_to=${category.id})}">
+			Copia qui</a>
+		<span th:if="${!category.enlighted && areWeCopying && #lists.size(category.children) >= 9}"
+			  class ="impossibleCopy"
+		>
+		[Impossibile copiare qui]
+		</span>
+		<!--<span th:text="${category.id}"></span>-->
+		<li th:unless="${#lists.isEmpty(category.children)}"
+			th:each="child : ${category.children}">
+			<ul th:insert="this :: list(${child})"></ul>
+		</li>
+	</div>
+</body>
+</html>

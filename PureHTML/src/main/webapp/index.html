@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+	<head>
+<link rel="stylesheet" type="text/css" media="all"
+	href="helper/style.css" th:href="@{/helper/style.css}" />		<meta charset="ISO-8859-1">
+		<title>Login</title>
+	</head>
+	
+	<body>
+		<h1>Catalogazioni di Immagini - login</h1>
+	
+		<form action="CheckLogin" method="POST">
+          <div style = "text-align: center">
+			Username: <input type="text" name="username" required><br>
+			Password:   <input type="password" name="psw" required><br>
+         
+			<input type="submit" value="login">
+		  </div>
+			<p th:text=" ${wrongCredentials}"></p>
+		</form>
+	
+	</body>
+</html>
