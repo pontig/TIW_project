@@ -68,6 +68,11 @@ span {
     font: 18px Helvetica, sans-serif; 
 
 }
+span.d{
+	font: 14px Helvetica, sans-serif; 
+	font-style:oblique;
+}
+
 select{
     position: relative ;
     font: 16px Helvetica, sans-serif; 
