@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -15,14 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-
 import com.google.gson.Gson;
 
-import it.polimi.tiw.Handler;
+import it.polimi.tiw.ConnectorHandler;
 import it.polimi.tiw.dao.CategoryDAO;
 import it.polimi.tiw.exceptions.TooManyChildrenException;
 import it.polimi.tiw.beans.Category;
@@ -40,7 +33,7 @@ public class CopyHere extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Handler.getConnection(getServletContext());
+		connection = ConnectorHandler.getConnection(getServletContext());
 
 	}
 
@@ -58,31 +51,30 @@ public class CopyHere extends HttpServlet {
 			try {
 				id_from = Integer.parseInt(request.getParameter("id_from"));
 				id_to = Integer.parseInt(request.getParameter("id_to"));
+
+				CategoryDAO dao = new CategoryDAO(connection);
+				Category treeToCopy = dao.getByParentId(id_from); // Ho il sottoalbero da copiare
+				boolean isRecursive = searchChild(treeToCopy, id_to);
+				if (isRecursive) {
+					response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+					outcome = "Cannot copy a category into itself";
+
+				} else {
+					try {
+						copySubTree(treeToCopy, (long) id_to);
+					} catch (TooManyChildrenException tmce) {
+						// We cannot append another child to the category
+						response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+						outcome = "Cannot copy the category: too many children";
+					} catch (SQLException e) {
+						response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+						outcome = "Cannot copy the category: database error " + e.getMessage();
+					}
+				}
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
 				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
 				outcome = "Invalid parameters";
-				break;
-			}
-
-			CategoryDAO dao = new CategoryDAO(connection);
-			Category treeToCopy = dao.getByParentId(id_from); // Ho il sottoalbero da copiare
-			boolean isRecursive = searchChild(treeToCopy, id_to);
-			if (isRecursive) {
-				response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-				outcome = "Cannot copy a category into itself";
-
-			} else {
-				try {
-					copySubTree(treeToCopy, (long) id_to);
-				} catch (TooManyChildrenException tmce) {
-					// We cannot append another child to the category
-					response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-					outcome = "Cannot copy the category: too many children";
-				} catch (SQLException e) {
-					response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-					outcome = "Cannot copy the category: database error " + e.getMessage();
-				}
 			}
 		}
 		String json = new Gson().toJson(outcome);
@@ -129,7 +121,7 @@ public class CopyHere extends HttpServlet {
 
 	public void destroy() {
 		try {
-			Handler.closeConnection(connection);
+			ConnectorHandler.closeConnection(connection);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

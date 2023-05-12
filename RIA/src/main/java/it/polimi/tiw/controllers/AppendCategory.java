@@ -5,8 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletContext;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -16,14 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
+
 
 import com.google.gson.Gson;
 
-import it.polimi.tiw.Handler;
+import it.polimi.tiw.ConnectorHandler;
 import it.polimi.tiw.dao.CategoryDAO;
 import it.polimi.tiw.exceptions.BlankFieldException;
 import it.polimi.tiw.exceptions.TooManyChildrenException;
@@ -44,7 +40,7 @@ public class AppendCategory extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Handler.getConnection(getServletContext());
+		connection = ConnectorHandler.getConnection(getServletContext());
 	}
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -101,7 +97,7 @@ public class AppendCategory extends HttpServlet {
 
 	public void destroy() {
 		try {
-			Handler.closeConnection(connection);
+			ConnectorHandler.closeConnection(connection);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

@@ -5,9 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.Enumeration;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.annotation.WebServlet;
@@ -16,12 +14,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.lang.StringEscapeUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.Handler;
+
+import it.polimi.tiw.ConnectorHandler;
 import it.polimi.tiw.dao.UserDAO;
 import it.polimi.tiw.exceptions.BlankFieldException;
 import it.polimi.tiw.beans.User;
@@ -41,7 +36,7 @@ public class CheckLogin extends HttpServlet {
     }
 
     public void init() throws ServletException {
-        connection = Handler.getConnection(getServletContext());
+        connection = ConnectorHandler.getConnection(getServletContext());
 
     }
 
@@ -112,7 +107,7 @@ public class CheckLogin extends HttpServlet {
 
     public void destroy() {
         try {
-            Handler.closeConnection(connection);
+            ConnectorHandler.closeConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }

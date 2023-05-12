@@ -18,7 +18,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.ConnectorerHandler;
+import it.polimi.tiw.ConnectorHandler;
 import it.polimi.tiw.beans.Category;
 import it.polimi.tiw.dao.CategoryDAO;
 
@@ -38,7 +38,7 @@ public class SelectTree extends HttpServlet {
     }
     
     public void init() throws ServletException {
-    	connection = ConnectorerHandler.getConnection(getServletContext());
+    	connection = ConnectorHandler.getConnection(getServletContext());
     	ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -86,6 +86,14 @@ public class SelectTree extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "This page doesn't resolve POST requests");
+	}
+	
+	public void destroy() {
+		try {
+			ConnectorHandler.closeConnection(connection);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

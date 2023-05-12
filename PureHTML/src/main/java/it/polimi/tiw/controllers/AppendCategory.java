@@ -21,7 +21,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.ConnectorerHandler;
+import it.polimi.tiw.ConnectorHandler;
 import it.polimi.tiw.dao.CategoryDAO;
 import it.polimi.tiw.exceptions.BlankFieldException;
 import it.polimi.tiw.exceptions.TooManyChildrenException;
@@ -42,7 +42,7 @@ public class AppendCategory extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = ConnectorerHandler.getConnection(getServletContext());
+		connection = ConnectorHandler.getConnection(getServletContext());
 		ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -107,7 +107,7 @@ public class AppendCategory extends HttpServlet {
 
 	public void destroy() {
 		try {
-			ConnectorerHandler.closeConnection(connection);
+			ConnectorHandler.closeConnection(connection);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

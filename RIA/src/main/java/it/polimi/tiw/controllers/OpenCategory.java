@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -13,15 +12,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-
 import com.google.gson.Gson;
 
-import it.polimi.tiw.Handler;
+import it.polimi.tiw.ConnectorHandler;
 import it.polimi.tiw.beans.Image;
 import it.polimi.tiw.dao.CategoryDAO;
 
@@ -38,7 +31,7 @@ public class OpenCategory extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Handler.getConnection(getServletContext());
+		connection = ConnectorHandler.getConnection(getServletContext());
 
 	}
 
@@ -84,4 +77,12 @@ public class OpenCategory extends HttpServlet {
 			throws ServletException, IOException {
 		response.sendError(HttpServletResponse.SC_NOT_IMPLEMENTED, "This page doesn't resolve POST requests");
 	}
+	
+    public void destroy() {
+        try {
+            ConnectorHandler.closeConnection(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -15,14 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.servlet.http.Part;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import com.google.gson.Gson;
 
-import it.polimi.tiw.Handler;
+import it.polimi.tiw.ConnectorHandler;
 import it.polimi.tiw.dao.CategoryDAO;
 
 /**
@@ -40,7 +39,7 @@ public class UploadImage extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Handler.getConnection(getServletContext());
+		connection = ConnectorHandler.getConnection(getServletContext());
 		ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -97,7 +96,7 @@ public class UploadImage extends HttpServlet {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		response.getWriter().write(json);
-		// TODO: test type of the file
+		// we don't check for the type of the file
 
 	}
 

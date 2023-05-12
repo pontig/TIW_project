@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -14,16 +13,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import org.apache.commons.lang.StringEscapeUtils;
-import org.thymeleaf.TemplateEngine;
-import org.thymeleaf.context.WebContext;
-import org.thymeleaf.templatemode.TemplateMode;
-import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
-
 import com.google.gson.Gson;
 
 import it.polimi.tiw.dao.CategoryDAO;
-import it.polimi.tiw.Handler;
+import it.polimi.tiw.ConnectorHandler;
 import it.polimi.tiw.beans.Category;
 
 @WebServlet("/GetTree")
@@ -36,7 +29,7 @@ public class GetTree extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = Handler.getConnection(getServletContext());
+		connection = ConnectorHandler.getConnection(getServletContext());
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -79,12 +72,12 @@ public class GetTree extends HttpServlet {
 
 	}
 
-	@Deprecated
-	private void linearize(List<Category> nl, List<Category> res) {
-		for (Category c : nl) {
-			res.add(c);
-			linearize(c.getChildren(), res);
-		}
-	}
+    public void destroy() {
+        try {
+            ConnectorHandler.closeConnection(connection);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
 }
