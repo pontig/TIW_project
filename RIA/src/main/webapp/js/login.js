@@ -31,8 +31,8 @@
 							console.log(msg)
 							form.reset()
 					}
-				} else form.reportValidity()
+				} 
 			})
-		}
+		} else form.reportValidity()
 	}
 })();
