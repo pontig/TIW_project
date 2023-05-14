@@ -56,7 +56,7 @@ input[type = password]{
   padding: 4px ;
 }
 
-input[type = submit]:hover {
+input[type = submit]:hover, #logout:hover {
 box-shadow:  2px 2px 10px #736359;  
 }
 a, a:active{
@@ -82,8 +82,11 @@ select{
    
 img{
     width: 50vw;
-    margin: 20px 25vw;
-    
+    margin: 20px 25vw;    
+}
+
+h3{
+	text-align: center;
 }
   
   
