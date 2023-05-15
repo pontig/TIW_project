@@ -21,11 +21,15 @@ var id_to = null
 	function Tree(_container, _alertContainer) {
 		this.container = _container
 		this.alertContainer = _alertContainer
+		
+		//confirm and revert refers to the botton shown after the drag&drop
+
 
 		document.getElementById("confirm").onclick = () => {
 			if (id_from != null && id_to != null) {
 				this.alertContainer.style.visibility = "hidden"
 
+				//cback function check the state of the request: if everthing is done, check the status code 
 				makeCall("GET", "CopyHere?id_from=" + id_from + "&id_to=" + id_to, null, (req) => {
 					if (req.readyState == 4) {
 						let msg = req.responseText
@@ -69,6 +73,7 @@ var id_to = null
 			})
 		}
 
+		// obj is the listo of the category with parent_id == null, for each of this obj, I call a recursive function
 		this.update = (obj) => {
 			this.container.innerHTML = ""
 			var rootList = document.createElement("ul")
@@ -109,14 +114,14 @@ var id_to = null
 					specialText.addEventListener("drop", (e) => {
 						e.preventDefault()
 						e.stopPropagation()
-						let data = e.dataTransfer.getData("text/plain")
-						let dragged = document.getElementById("category" + data)
+						let data = e.dataTransfer.getData("text/plain")		//id of the category
+						let dragged = document.getElementById("category" + data)	//node corrisponding to that id
 
 						let from = dragged != null ? dragged.querySelector(".n").innerHTML : null
 						let to = "the main root"
 
 
-						let c = confirm("sure you want to append " + from + " to " + to + "?")
+						let c = confirm("sure you want to append " + from + " to " + to + "?") // boolean
 						if (dragged != null && c) {
 							// just copy the dragged element and append it to the list
 							// but make it red
@@ -137,8 +142,10 @@ var id_to = null
 				}
 
 				e.dataTransfer.setData("text/plain", node.id)
+				//spD part dragme of the node
 				document.querySelectorAll(".d").forEach((f) => {
-					if (spD != f && (document.getElementById("category" + node.id).contains(f) || f.parentNode.lastChild.childElementCount >= 9)) {
+					if (f != spD && (document.getElementById("category" + node.id).contains(f) || f.parentNode.lastChild.childElementCount >= 9)) {
+						//cannot drop
 						f.style.display = "none"
 					} else if (spD == f) {
 						f.innerHTML = " dropMe"
@@ -189,7 +196,6 @@ var id_to = null
 			sp.addEventListener("click", (e) => {
 				e.preventDefault()
 				// replace the text with a text input
-				console.log("clicked something")
 				let input = document.createElement("input")
 				input.type = "text"
 				input.value = e.target.innerHTML
@@ -200,7 +206,6 @@ var id_to = null
 						if (req.readyState == 4) {
 							let msg = req.responseText
 							if (req.status == 200) {
-								console.log("New name = " + newName)
 								name = document.createTextNode(newName)
 								sp.innerHTML = newName
 								li.replaceChild(sp, input)
@@ -223,6 +228,7 @@ var id_to = null
 				imgContainer.show(node.id)
 			})
 
+			// for all nodes put the children in the right place
 			spH.appendChild(hierarchy)
 			spD.appendChild(dragText)
 			spO.appendChild(aOpenCategory)
@@ -250,7 +256,6 @@ var id_to = null
 			let self = this
 			self.container.style.display = "block"
 			window.location.href = "#images"
-			document.querySelector("input[type=hidden]").value = category_id
 			makeCall("GET", "OpenCategory?id=" + category_id, null,
 				(req) => {
 					if (req.readyState == 4) {
@@ -263,29 +268,6 @@ var id_to = null
 						}
 					}
 				})
-
-
-			// this.container.querySelector("form").addEventListener("submit", (e) => {
-			// 	e.preventDefault()
-			// 	let form = e.target.closest("form")
-			// 	if (form.checkValidity()) {
-			// 		let formData = new FormData(form)
-			// 		// transform the input name image into a blob
-			// 		//let file = form.querySelector("input[type=file]").files[0]
-			// 		//formData.append("image", file)
-			// 		makeCall("POST", "UploadImage", formData,
-			// 			(req) => {
-			// 				if (req.readyState == 4) {
-			// 					var msg = req.responseText
-			// 					if (req.status == 200) {
-			// 						console.log("Image uploaded")
-			// 						self.show(category_id)
-			// 					} else {
-			// 					}
-			// 				}
-			// 			})
-			// 	}
-			// })
 		}
 
 		this.update = (imageList) => {
@@ -293,7 +275,6 @@ var id_to = null
 			let imgContainer = this.container.querySelector(".imgContainer")
 			imgContainer.innerHTML = ""
 			imageList.forEach((img) => {
-				//console.log(img)
 				let imgDiv = document.createElement("div")
 				let imgElm = document.createElement("img")
 				imgElm.src = "data:image/png;base64," + img.img
@@ -361,8 +342,7 @@ var id_to = null
 	}
 
 	function PageOrchestrator() {
-		//var alertContainer = document.getElementById("alertContainer")
-
+		
 		this.start = () => {
 			treeDiv = new Tree(document.getElementById("treeContainer"), document.getElementById("alertDiv"))
 			treeDiv.show()
@@ -377,17 +357,15 @@ var id_to = null
 						var msg = req.responseText
 						if (req.status == 202) {
 							window.location.href = "index.html"
-						} else { }
+						}
 					}
 				})
 			}
 		}
 
 		this.refresh = () => {
-			//alertContainer.innerHTML = ""
 			imgContainer.reset()
 			treeDiv.reset()
-			//formContainer.reset()
 		}
 	}
 }
