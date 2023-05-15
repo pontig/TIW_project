@@ -150,18 +150,6 @@ public class CategoryDAO {
 		return insertedID;
 	}
 
-	@Deprecated
-	public void insert(Category Category) {
-		try (PreparedStatement stmt = connection.prepareStatement("INSERT INTO Category VALUES (?, ?, ?)")) {
-			stmt.setInt(1, Category.getId());
-			stmt.setString(2, Category.getName());
-			stmt.setInt(3, Category.getParentId());
-			stmt.executeUpdate();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public List<Image> getImages(int category_ID) throws SQLException {
 		List<Image> images = new ArrayList<>();
 		String query = "SELECT * FROM image NATURAL JOIN belongs WHERE category_ID = ?";
@@ -196,43 +184,6 @@ public class CategoryDAO {
 			}
 		}
 		return images;
-	}
-
-	@Deprecated
-	public List<Category> allCategories() throws SQLException {
-		List<Category> categories = new ArrayList<>();
-		String query = "SELECT * FROM category";
-		ResultSet result = null;
-		PreparedStatement pstatement = null;
-
-		try {
-			pstatement = connection.prepareStatement(query);
-			result = pstatement.executeQuery();
-			while (result.next()) {
-				Category res = new Category();
-				res.setId(result.getInt("category_ID"));
-				res.setName(result.getString("name"));
-				res.setParentId(-1);
-				res.setHierarchy(null);
-				categories.add(res);
-
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-			throw new SQLException(e);
-		} finally {
-			try {
-				result.close();
-			} catch (Exception e1) {
-				throw new SQLException(e1);
-			}
-			try {
-				pstatement.close();
-			} catch (Exception e2) {
-				throw new SQLException(e2);
-			}
-		}
-		return categories;
 	}
 
 	public void uploadImage(int category_id, InputStream image) throws SQLException {

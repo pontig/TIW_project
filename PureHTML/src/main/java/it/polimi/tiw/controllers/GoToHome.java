@@ -44,12 +44,10 @@ public class GoToHome extends HttpServlet {
 		templateResolver.setSuffix(".html");
 	}
 
-
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		doPost(request, response);
 	}
-
 
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -64,32 +62,32 @@ public class GoToHome extends HttpServlet {
 		CategoryDAO dao = new CategoryDAO(connection);
 		List<Category> tree = null;
 		List<Category> linear = new ArrayList<Category>();
-		
 
 		try {
-			tree = dao.getAll(null);		} catch (SQLException e) {
+			tree = dao.getAll(null);
+		} catch (SQLException e) {
 			response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "An unexpected error occurred");
 		}
 		linearize(tree, linear);
-		
+
 		String path = "/WEB-INF/home.html";
 		ServletContext servletContext = getServletContext();
 		final WebContext ctx = new WebContext(request, response, servletContext, request.getLocale());
 		ctx.setVariable("categories", tree);
 		ctx.setVariable("line", linear);
-		if (request.getParameter("ErrorMsgInsertion") != null ) 
+		if (request.getParameter("ErrorMsgInsertion") != null)
 			ctx.setVariable("ErrorMsgInsertion", StringEscapeUtils.escapeJava(request.getParameter("username")));
 		templateEngine.process(path, ctx, response.getWriter());
-		
+
 	}
-	
+
 	private void linearize(List<Category> nl, List<Category> res) {
-		for(Category c : nl) {
+		for (Category c : nl) {
 			res.add(c);
 			linearize(c.getChildren(), res);
 		}
 	}
-	
+
 	public void destroy() {
 		try {
 			ConnectorHandler.closeConnection(connection);

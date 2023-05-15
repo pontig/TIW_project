@@ -70,7 +70,7 @@ public class CopyHere extends HttpServlet {
 		Category treeToCopy = dao.getByParentId(id_from); // Ho il sottoalbero da copiare
 		boolean isRecursive = searchChild(treeToCopy, id_to);
 		if (isRecursive) {
-			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Are you trying to break my tree??");
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cannot copy a category into itself");
 			return;
 		}
 		String path = getServletContext().getContextPath() + "/GoToHome";
