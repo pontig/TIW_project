@@ -17,7 +17,7 @@
 							break
 						case 400: // bad request
 							alert("There cannot be empty fields")
-							window.location.href = "login.html"
+							window.location.href = "index.html"
 							break
 						case 401: // unauthorized
 							alert("Wrong username or password")
