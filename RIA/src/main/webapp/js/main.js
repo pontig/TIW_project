@@ -21,7 +21,7 @@ var id_to = null
 	function Tree(_container, _alertContainer) {
 		this.container = _container
 		this.alertContainer = _alertContainer
-		
+
 		//confirm and revert refers to the botton shown after the drag&drop
 
 
@@ -203,18 +203,23 @@ var id_to = null
 				input.addEventListener("blur", (f) => {
 					// send the new name to the server
 					let newName = f.target.value
-					makeCall("GET", "RenameCategory?id=" + node.id + "&newName=" + newName, null, (req) => {
-						if (req.readyState == 4) {
-							let msg = req.responseText
-							if (req.status == 200) {
-								name = document.createTextNode(newName)
-								sp.innerHTML = newName
-								li.replaceChild(sp, input)
-							} else {
-								alert(msg)
+					if (newName == "") {
+						alert("The name cannot be null")
+						li.replaceChild(sp, input)
+					} else {
+						makeCall("GET", "RenameCategory?id=" + node.id + "&newName=" + newName, null, (req) => {
+							if (req.readyState == 4) {
+								let msg = req.responseText
+								if (req.status == 200) {
+									name = document.createTextNode(newName)
+									sp.innerHTML = newName
+									li.replaceChild(sp, input)
+								} else {
+									alert(msg)
+								}
 							}
-						}
-					})
+						})
+					}
 				})
 				li.replaceChild(input, sp)
 				input.focus()
@@ -343,12 +348,12 @@ var id_to = null
 	}
 
 	function PageOrchestrator() {
-		
+
 		this.start = () => {
 			treeDiv = new Tree(document.getElementById("treeContainer"), document.getElementById("alertDiv"))
 			treeDiv.show()
 			imgContainer = new ImgContainer(document.getElementById("images"))
-			
+
 			formContainer = new Form(document.getElementById("newCategoryForm"))
 
 			document.getElementById("logout").onclick = () => {
