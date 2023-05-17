@@ -59,6 +59,7 @@ var id_to = null
 		this.show = () => {
 			var self = this
 			self.alertContainer.style.visibility = "hidden"
+			document.getElementById("copyInRoot").style.visibility = "hidden"
 			makeCall("GET", "GetTree", null, (req) => {
 				if (req.readyState == 4) {
 					let msg = req.responseText;
