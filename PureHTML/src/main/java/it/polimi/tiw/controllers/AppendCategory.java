@@ -84,9 +84,7 @@ public class AppendCategory extends HttpServlet {
 			ResultSet dummy = dao.insertNewCategory(name, father);
 		} catch (TooManyChildrenException tmce) {
 			// We cannot append another child to the category
-			request.setAttribute("ErrorMsgInsertion", tmce);
-			RequestDispatcher dispatcher = request.getRequestDispatcher("/GoToHome");
-			dispatcher.forward(request, response);
+			response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Cannot add the tenth child");
 			return;
 
 		} catch (SQLException e) {
