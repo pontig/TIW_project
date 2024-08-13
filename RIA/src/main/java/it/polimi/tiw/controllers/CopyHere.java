@@ -15,7 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import com.google.gson.Gson;
 
-import it.polimi.tiw.ConnectorHandler;
+import it.polimi.tiw.Connector;
 import it.polimi.tiw.dao.CategoryDAO;
 import it.polimi.tiw.exceptions.TooManyChildrenException;
 import it.polimi.tiw.beans.Category;
@@ -33,7 +33,7 @@ public class CopyHere extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = ConnectorHandler.getConnection(getServletContext());
+		connection = Connector.getConnection(getServletContext());
 
 	}
 
@@ -121,7 +121,7 @@ public class CopyHere extends HttpServlet {
 
 	public void destroy() {
 		try {
-			ConnectorHandler.closeConnection(connection);
+			Connector.closeConnection(connection);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

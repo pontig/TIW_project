@@ -18,7 +18,7 @@ import org.thymeleaf.context.WebContext;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
-import it.polimi.tiw.ConnectorHandler;
+import it.polimi.tiw.Connector;
 import it.polimi.tiw.beans.Category;
 import it.polimi.tiw.dao.CategoryDAO;
 
@@ -38,7 +38,7 @@ public class SelectTree extends HttpServlet {
     }
     
     public void init() throws ServletException {
-    	connection = ConnectorHandler.getConnection(getServletContext());
+    	connection = Connector.getConnection(getServletContext());
     	ServletContext servletContext = getServletContext();
 		ServletContextTemplateResolver templateResolver = new ServletContextTemplateResolver(servletContext);
 		templateResolver.setTemplateMode(TemplateMode.HTML);
@@ -90,7 +90,7 @@ public class SelectTree extends HttpServlet {
 	
 	public void destroy() {
 		try {
-			ConnectorHandler.closeConnection(connection);
+			Connector.closeConnection(connection);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

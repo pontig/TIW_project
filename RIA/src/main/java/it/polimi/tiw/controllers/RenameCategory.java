@@ -15,7 +15,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 
 import com.google.gson.Gson;
 
-import it.polimi.tiw.ConnectorHandler;
+import it.polimi.tiw.Connector;
 import it.polimi.tiw.dao.CategoryDAO;
 
 /**
@@ -31,7 +31,7 @@ public class RenameCategory extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		connection = ConnectorHandler.getConnection(getServletContext());
+		connection = Connector.getConnection(getServletContext());
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -74,7 +74,7 @@ public class RenameCategory extends HttpServlet {
 	
     public void destroy() {
         try {
-            ConnectorHandler.closeConnection(connection);
+            Connector.closeConnection(connection);
         } catch (SQLException e) {
             e.printStackTrace();
         }
